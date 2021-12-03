@@ -2,11 +2,6 @@
 
 const { spawnSync } = require('child_process');
 
-const config = {
-  subscriptionId: process.env.SUBSCRIPTION_ID,
-  defaultNumberOfDays: 7
-}
-
 const atMidnight = (date) => {
     date.setHours(0);
     date.setMinutes(0);
@@ -23,17 +18,30 @@ const az = (params) => {
     return output.stdout;
 }
 
+const currentSubscriptionId = () => {
+    if (process.env.SUBSCRIPTION_ID) return process.env.subscriptionId;
+
+    const account = JSON.parse(az(['account', 'show']));
+    console.log(`No SUBSCRIPTION_ID found, using ${account.name}...`);
+    return account.id;
+}
+
+const config = {
+    subscriptionId: currentSubscriptionId(),
+    defaultNumberOfDays: 7
+}
+
 const resourceGroups = az([
-        'rest'
-        , '--method'
-        , 'GET'
-        , '--uri'
-        , `https://management.azure.com/subscriptions/${config.subscriptionId}/resourceGroups`
-        , '--url-parameters'
-        , 'api-version=2021-04-01', '$expand=createdTime', '$select=id,name,createdTime'
-        , '--query'
-        , `value | [? contains(name, 'delete')] | [].{id: id, name: name, createdTime: createdTime, tags: tags}`
-    ]);
+    'rest'
+    , '--method'
+    , 'GET'
+    , '--uri'
+    , `https://management.azure.com/subscriptions/${config.subscriptionId}/resourceGroups`
+    , '--url-parameters'
+    , 'api-version=2021-04-01', '$expand=createdTime', '$select=id,name,createdTime'
+    , '--query'
+    , `value | [? contains(name, 'delete')] | [].{id: id, name: name, createdTime: createdTime, tags: tags}`
+]);
 
 const expiredResources = [];
 

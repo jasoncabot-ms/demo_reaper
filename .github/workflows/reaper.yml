@@ -21,4 +21,4 @@ jobs:
       - name: Reap Expired Resources
         uses: Azure/cli@v1
         with:
-          inlineScript: ./reap
+          inlineScript: node reap

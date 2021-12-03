@@ -31,7 +31,8 @@ const config = {
     defaultNumberOfDays: 7
 }
 
-const resourceGroups = az([
+// Find all resource groups called *delete*
+const resourceGroups = JSON.parse(az([
     'rest'
     , '--method'
     , 'GET'
@@ -41,12 +42,26 @@ const resourceGroups = az([
     , 'api-version=2021-04-01', '$expand=createdTime', '$select=id,name,createdTime'
     , '--query'
     , `value | [? contains(name, 'delete')] | [].{id: id, name: name, createdTime: createdTime, tags: tags}`
-]);
+]));
+
+// Find any individual resources tagged with 'delete'
+const resources = JSON.parse(az([
+    'rest'
+    , '--method'
+    , 'GET'
+    , '--uri'
+    , `https://management.azure.com/subscriptions/${config.subscriptionId}/resources`
+    , '--url-parameters'
+    , 'api-version=2021-04-01', "$expand=createdTime", "$select=id,name,createdTime"
+    , '--query'
+    , 'value | [? tags.delete].{id: id, name: name, createdTime: createdTime, tags: tags}'
+]));
+
 
 const expiredResources = [];
 
 // Find the subset of resources to be culled
-JSON.parse(resourceGroups).forEach(rg => {
+resourceGroups.concat(resources).forEach(rg => {
     const expiresAt = atMidnight(new Date(rg.createdTime));
 
     // If resource group is tagged with a number, use that as the number of days e.g {delete: 7}, otherwise use a default value
@@ -64,6 +79,8 @@ JSON.parse(resourceGroups).forEach(rg => {
 console.log(`Reaping ${expiredResources.length} resource${expiredResources.length === 1 ? '' : 's'}...`);
 
 if (expiredResources.length > 0) {
+    console.log(expiredResources.map(res => `* ${res.name}`).join('\n'));
+
     // Reap all the expired resources
     const ids = expiredResources.map(rg => rg.id).join(' ');
     const output = az([

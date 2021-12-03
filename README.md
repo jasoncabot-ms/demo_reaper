@@ -16,3 +16,9 @@ Sound useful?
 ## How to onboard your subscription
 
 * Set it up
+
+## How to run locally
+
+```bash
+SUBSCRIPTION_ID=... node reap
+```

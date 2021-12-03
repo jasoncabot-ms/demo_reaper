@@ -1,4 +1,6 @@
-![Grim Reaper Illustration](https://user-images.githubusercontent.com/51163690/144595058-d635dc36-97c0-40a4-88ef-75c4efeb9417.jpg)
+# 💀 Demo Reaper 💀
+
+Keeps your Azure subscription clear of expired resources
 
 ## Do you ...
 

@@ -35,6 +35,17 @@ For example this resource group called `app-service-delete` with tag `{delete: 3
 ![image](https://user-images.githubusercontent.com/51163690/144624751-f58592ef-ebf7-48e6-9ac3-ff507a268732.png)
 ![image](https://user-images.githubusercontent.com/51163690/144624790-3b907be8-512a-42b7-a0eb-fd38c2a4b64d.png)
 
+## How do I know if it worked?
+
+Look in the GitHub actions log. A run where expired resources were found would look something like this:
+
+![image](https://user-images.githubusercontent.com/51163690/144629997-fae8b5f6-a6cb-49f2-a655-dba87070c54b.png)
+
+Otherwise if no expired resources were found, then something like this:
+
+![image](https://user-images.githubusercontent.com/51163690/144630179-0e6e35dc-51c7-4e9a-b71f-557fd57a0c20.png)
+
+
 ## How to run locally
 
 ```bash

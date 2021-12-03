@@ -61,11 +61,11 @@ const resources = JSON.parse(az([
 const expiredResources = [];
 
 // Find the subset of resources to be culled
-resourceGroups.concat(resources).forEach(rg => {
-    const expiresAt = atMidnight(new Date(rg.createdTime));
+resourceGroups.concat(resources).forEach(resource => {
+    const expiresAt = atMidnight(new Date(resource.createdTime));
 
     // If resource group is tagged with a number, use that as the number of days e.g {delete: 7}, otherwise use a default value
-    const validForDays = rg.tags.delete || config.defaultNumberOfDays;
+    const validForDays = resource.tags.delete || config.defaultNumberOfDays;
     expiresAt.setDate(expiresAt.getDate() + validForDays);
 
     const now = atMidnight(new Date());
@@ -73,16 +73,16 @@ resourceGroups.concat(resources).forEach(rg => {
     // If the resource hasn't expired yet then just exit
     if (expiresAt > now) return;
 
-    expiredResources.push(rg);
+    expiredResources.push(resource);
 });
 
 console.log(`Reaping ${expiredResources.length} resource${expiredResources.length === 1 ? '' : 's'}...`);
 
 if (expiredResources.length > 0) {
-    console.log(expiredResources.map(res => `* ${res.name}`).join('\n'));
+    console.log(expiredResources.map(resource => `* ${resource.name}`).join('\n'));
 
     // Reap all the expired resources
-    const ids = expiredResources.map(rg => rg.id).join(' ');
+    const ids = expiredResources.map(resource => resource.id).join(' ');
     const output = az([
         'resource'
         , 'delete'

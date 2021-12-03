@@ -20,12 +20,6 @@ Sound useful?
 1. ???
 1. Profit
 
-## How to run locally
-
-```bash
-SUBSCRIPTION_ID=... node reap
-```
-
 ## How does it work?
 
 Any resource group created with `delete` in it's name will be culled 7 days after it was created without you having to take any manual action.
@@ -38,3 +32,9 @@ For example this resource group called `app-service-delete` with tag `{delete: 3
 
 ![image](https://user-images.githubusercontent.com/51163690/144624751-f58592ef-ebf7-48e6-9ac3-ff507a268732.png)
 ![image](https://user-images.githubusercontent.com/51163690/144624790-3b907be8-512a-42b7-a0eb-fd38c2a4b64d.png)
+
+## How to run locally
+
+```bash
+SUBSCRIPTION_ID=... node reap
+```

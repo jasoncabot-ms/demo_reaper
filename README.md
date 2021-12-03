@@ -15,14 +15,16 @@ Sound useful?
 
 ## How to onboard your subscription
 
-1. Use this repository as a template
+1. [Use this repository as a template](https://github.com/jasoncabot-ms/demo_reaper/generate)
 1. [Configure Azure credentials as GitHub Secret](https://github.com/marketplace/actions/azure-cli-action#configure-azure-credentials-as-github-secret)
 1. ???
 1. Profit
 
 ## How does it work?
 
-Any resource group created with `delete` in it's name will be culled 7 days after it was created without you having to take any manual action.
+Any resource group created with `delete` in it's name will be culled 7 days after it was created without you having to take any manual action
+
+A GitHub Action, with access to your subscription, will run every day and look for any resources that are past their expiry date. If it finds any, they will be culled.
 
 ## Can I change how long a resource group will be considered valid?
 

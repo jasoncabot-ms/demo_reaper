@@ -17,8 +17,12 @@ Sound useful?
 
 1. [Use this repository as a template](https://github.com/jasoncabot-ms/demo_reaper/generate)
 1. [Configure Azure credentials as GitHub Secret](https://github.com/marketplace/actions/azure-cli-action#configure-azure-credentials-as-github-secret)
-1. ???
-1. Profit
+   1. Open the [Azure Shell](https://shell.azure.com)
+   1. **Run** `az ad sp create-for-rbac --sdk-auth --role contributor`
+   1. Go to GitHub -> Settings -> Secrets -> Actions
+   1. Add a **Repository Secret** with name `AZURE_CREDENTIALS` with a value of the output you generated earlier
+3. ???
+4. Profit
 
 ## How does it work?
 

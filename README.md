@@ -22,3 +22,16 @@ Sound useful?
 ```bash
 SUBSCRIPTION_ID=... node reap
 ```
+
+## How does it work?
+
+Any resource group created with `delete` in it's name will be culled 7 days after it was created without you having to take any manual action.
+
+## Can I change how long a resource group will be considered valid?
+
+Yes - just add a tag called `delete` with an integer value for the number of days this resource group should be active.
+
+For example this resource group called `app-service-delete` with tag `{delete: 3}` will be culled automatically **3 days** after it was created.
+
+![image](https://user-images.githubusercontent.com/51163690/144624751-f58592ef-ebf7-48e6-9ac3-ff507a268732.png)
+![image](https://user-images.githubusercontent.com/51163690/144624790-3b907be8-512a-42b7-a0eb-fd38c2a4b64d.png)

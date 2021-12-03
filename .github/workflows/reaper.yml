@@ -1,0 +1,22 @@
+name: Demo Reaper
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+
+jobs:
+  reap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+      - name: Reap Expired Resources
+        uses: Azure/cli@v1
+        with:
+          inlineScript: ./reap

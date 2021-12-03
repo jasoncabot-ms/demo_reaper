@@ -15,7 +15,10 @@ Sound useful?
 
 ## How to onboard your subscription
 
-* Set it up
+1. Use this repository as a template
+1. [Configure Azure credentials as GitHub Secret](https://github.com/marketplace/actions/azure-cli-action#configure-azure-credentials-as-github-secret)
+1. ???
+1. Profit
 
 ## How to run locally
 

@@ -1,0 +1,69 @@
+#! /usr/local/bin/node
+
+const { spawnSync } = require('child_process');
+
+const config = {
+  subscriptionId: process.env.SUBSCRIPTION_ID,
+  defaultNumberOfDays: 7
+}
+
+const atMidnight = (date) => {
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    return date;
+}
+
+const az = (params) => {
+    const output = spawnSync(`az`, params, { encoding: 'utf-8' });
+    if (output.error || output.status !== 0) {
+        throw new Error('Unable to query Azure REST API using the CLI. ' + (output.error || output.stderr.toString()));
+    }
+    return output.stdout;
+}
+
+const resourceGroups = az([
+        'rest'
+        , '--method'
+        , 'GET'
+        , '--uri'
+        , `https://management.azure.com/subscriptions/${config.subscriptionId}/resourceGroups`
+        , '--url-parameters'
+        , 'api-version=2021-04-01', '$expand=createdTime', '$select=id,name,createdTime'
+        , '--query'
+        , `value | [? contains(name, 'delete')] | [].{id: id, name: name, createdTime: createdTime, tags: tags}`
+    ]);
+
+const expiredResources = [];
+
+// Find the subset of resources to be culled
+JSON.parse(resourceGroups).forEach(rg => {
+    const expiresAt = atMidnight(new Date(rg.createdTime));
+
+    // If resource group is tagged with a number, use that as the number of days e.g {delete: 7}, otherwise use a default value
+    const validForDays = rg.tags.delete || config.defaultNumberOfDays;
+    expiresAt.setDate(expiresAt.getDate() + validForDays);
+
+    const now = atMidnight(new Date());
+
+    // If the resource hasn't expired yet then just exit
+    if (expiresAt > now) return;
+
+    expiredResources.push(rg);
+});
+
+console.log(`Reaping ${expiredResources.length} resource${expiredResources.length === 1 ? '' : 's'}...`);
+
+if (expiredResources.length > 0) {
+    // Reap all the expired resources
+    const ids = expiredResources.map(rg => rg.id).join(' ');
+    const output = az([
+        'resource'
+        , 'delete'
+        , '--ids'
+        , ids
+    ]);
+}
+
+console.log(`My work here is done`);

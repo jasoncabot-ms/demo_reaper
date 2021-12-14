@@ -65,7 +65,7 @@ resourceGroups.concat(resources).forEach(resource => {
     const expiresAt = atMidnight(new Date(resource.createdTime));
 
     // If resource group is tagged with a number, use that as the number of days e.g {delete: 7}, otherwise use a default value
-    const validForDays = resource.tags.delete || config.defaultNumberOfDays;
+    const validForDays = parseInt(resource.tags.delete || config.defaultNumberOfDays, 10);
     expiresAt.setDate(expiresAt.getDate() + validForDays);
 
     const now = atMidnight(new Date());

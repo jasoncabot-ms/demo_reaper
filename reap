@@ -71,7 +71,10 @@ resourceGroups.concat(resources).forEach(resource => {
     const now = atMidnight(new Date());
 
     // If the resource hasn't expired yet then just exit
-    if (expiresAt > now) return;
+    if (expiresAt > now) {
+        console.log(`Resource ${resource.name} matches for reaping but has not yet expired. It will be reaped at ${expiresAt.toDateString()}`);
+        return;
+    }
 
     expiredResources.push(resource);
 });

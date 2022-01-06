@@ -85,13 +85,13 @@ if (expiredResources.length > 0) {
     console.log(expiredResources.map(resource => `* ${resource.name}`).join('\n'));
 
     // Reap all the expired resources
-    const ids = expiredResources.map(resource => resource.id).join(' ');
+    const ids = expiredResources.map(resource => resource.id);
     const output = az([
         'resource'
         , 'delete'
         , '--ids'
         , ids
-    ]);
+    ].flat());
 }
 
 console.log(`My work here is done`);

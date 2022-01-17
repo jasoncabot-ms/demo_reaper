@@ -41,7 +41,7 @@ const resourceGroups = JSON.parse(az([
     , '--url-parameters'
     , 'api-version=2021-04-01', '$expand=createdTime', '$select=id,name,createdTime'
     , '--query'
-    , `value | [? contains(name, 'delete')] | [].{id: id, name: name, createdTime: createdTime, tags: tags}`
+    , `value | [? contains(name, 'delete') || tags.delete] | [].{id: id, name: name, createdTime: createdTime, tags: tags}`
 ]));
 
 // Find any individual resources tagged with 'delete'
@@ -54,7 +54,7 @@ const resources = JSON.parse(az([
     , '--url-parameters'
     , 'api-version=2021-04-01', "$expand=createdTime", "$select=id,name,createdTime"
     , '--query'
-    , 'value | [? tags.delete].{id: id, name: name, createdTime: createdTime, tags: tags}'
+    , `value | [? contains(name, 'delete') || tags.delete].{id: id, name: name, createdTime: createdTime, tags: tags}`
 ]));
 
 
